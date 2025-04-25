@@ -8,6 +8,8 @@ part 'notifications_event.dart';
 part 'notifications_state.dart';
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
   NotificationsBloc() : super(NotificationsState());
 
   // @override
@@ -16,4 +18,22 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   // ) async* {
   //   // TODO: implement mapEventToState
   // }
+
+  void requestPermission() async {
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: true,
+      provisional: false,
+      sound: true,
+    );
+
+    settings.authorizationStatus;
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    }
+  }
 }
