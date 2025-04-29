@@ -1,8 +1,10 @@
 // import 'dart:async';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:equatable/equatable.dart';
+import 'package:local_push_notifications_flutter/firebase_options.dart';
 
 part 'notifications_event.dart';
 part 'notifications_state.dart';
@@ -18,6 +20,12 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   // ) async* {
   //   // TODO: implement mapEventToState
   // }
+
+  static Future<void> initializeFCM() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
 
   void requestPermission() async {
     NotificationSettings settings = await messaging.requestPermission(

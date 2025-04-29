@@ -6,7 +6,11 @@ import 'package:local_push_notifications_flutter/config/theme/app_theme.dart';
 
 import 'package:local_push_notifications_flutter/presentation/blocs/notifications/notifications_bloc.dart';
 
-void main() {
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationsBloc.initializeFCM();
+
   runApp(MultiBlocProvider(providers: [
     BlocProvider(create: (_) => NotificationsBloc())
   ], child: const MainApp()));
