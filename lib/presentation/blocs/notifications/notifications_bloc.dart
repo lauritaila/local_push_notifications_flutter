@@ -1,9 +1,12 @@
 // import 'dart:async';
 
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:equatable/equatable.dart';
+import 'package:local_push_notifications_flutter/domain/entities/push_messages.dart';
 import 'package:local_push_notifications_flutter/firebase_options.dart';
 
 part 'notifications_event.dart';
@@ -22,6 +25,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
   NotificationsBloc() : super(NotificationsState()) {
     on<NotificationStatusChanged>(_notificationStatusChanged);
+    on<NotificationReceived>(_onPushMessageReceived);
 
     //verify permission
     _initialStatusCheck();
@@ -42,6 +46,12 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     emit(state.copyWith(status: event.status));
     _getFCMToken();
   }
+  void _onPushMessageReceived(
+    NotificationReceived event,
+    Emitter<NotificationsState> emit,
+  ) {
+    emit(state.copyWith(notifications: [event.message, ...state.notifications]));
+  }
 
   void _initialStatusCheck() async {
     final settings = await messaging.getNotificationSettings();
@@ -56,13 +66,19 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   }
 
   void _handleRemoteMessage(RemoteMessage message) {
-    print('Got a message whilst in the foreground!');
-    print('Message data: ${message.data}');
     if (message.notification == null) return;
-    print('Message also contained a notification: ${message.notification}');
+    final notification = PushMessage(
+      messageId: message.messageId?.replaceAll(":", '').replaceAll("%", "") ?? '',
+      title: message.notification?.title ?? '',
+      body: message.notification?.body ?? '',
+      sendDate: message.sentTime ?? DateTime.now(),
+      data: message.data,
+      imageUrl: Platform.isIOS ? message.notification?.apple?.imageUrl : message.notification?.android?.imageUrl,  
+    );
+    add(NotificationReceived(notification));
   }
 
-    void _onForegroundMessage() async {
+  void _onForegroundMessage() async {
     FirebaseMessaging.onMessage.listen(_handleRemoteMessage);
   }
 
