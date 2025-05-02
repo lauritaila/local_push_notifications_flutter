@@ -95,4 +95,10 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
     add(NotificationStatusChanged(settings.authorizationStatus));
   }
+
+  PushMessage? getMessageById(String id) { 
+    final exist = state.notifications.any((message) => message.messageId == id);
+    if (!exist) return null;
+    return state.notifications.firstWhere((message) => message.messageId == id);
+  }
 }
