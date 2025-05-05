@@ -26,7 +26,54 @@ class MainApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.getTheme()
+      theme: AppTheme.getTheme(),
+      builder: (context, child) => _HandleNotificationInteractions(child: child!)
     );
+  }
+}
+
+class _HandleNotificationInteractions extends StatefulWidget {
+  final Widget child;
+  const _HandleNotificationInteractions({required this.child});
+
+  @override
+  State<_HandleNotificationInteractions> createState() => _HandleNotificationInteractionsState();
+}
+
+class _HandleNotificationInteractionsState extends State<_HandleNotificationInteractions> {
+
+  Future<void> setupInteractedMessage() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+
+    // Also handle any interaction when the app is in the background via a
+    // Stream listener
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+  
+  void _handleMessage(RemoteMessage message) {
+    context.read<NotificationsBloc>().handleRemoteMessage(message);
+    final messageId = message.messageId?.replaceAll(":", "").replaceAll("%", "");
+    appRouter.push('/push-details/$messageId');
+  }
+
+  
+  @override
+  void initState() {
+    super.initState();
+    setupInteractedMessage();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }
