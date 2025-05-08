@@ -26,9 +26,9 @@ Welcome to the Notification App, a Flutter application that demonstrates how to 
 ## Installation
 
 1. **Clone the repository**:
-   Open your terminal or command prompt and navigate to the directory where you want to clone the project. Then, run the following command, replacing `<your_repository_url>` with the actual URL of your project's repository:
+   Open your terminal or command prompt and navigate to the directory where you want to clone the project. Then, run the following command, replacing `https://github.com/lauritaila/local_push_notifications_flutter.git` with the actual URL of your project's repository:
    ```bash
-   git clone <your_repository_url>
+   git clone https://github.com/lauritaila/local_push_notifications_flutter.git
    ```
    2.**Navigate to the project directory**: 
    Once the repository is cloned, navigate into the project directory using the cd command:
