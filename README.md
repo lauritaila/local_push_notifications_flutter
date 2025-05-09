@@ -12,10 +12,13 @@ Welcome to the Notification App, a Flutter application that demonstrates how to 
 
 ## Screenshots
 
-*(Include screenshots of your app here. If you don't have them yet, you can add placeholders like the ones below and replace them later.)*
-
 <img src="screenshots/home_screen.png" height="350" alt="Home Screen" />
 <img src="screenshots/details_screen.png" height="350" alt="Details Screen" />
+
+## Important Note Regarding iOS/Apple Products
+
+**Please be aware that this project, in its current configuration, is not set up to run on iOS or other Apple products.** The necessary configurations and setup for Firebase and local notifications on iOS have not been included in this version. Therefore, the application will likely not function as expected on these devices.
+
 
 ## Requirements
 
@@ -36,10 +39,9 @@ Welcome to the Notification App, a Flutter application that demonstrates how to 
    cd local_push_notifications_flutter
    ```
    3.**Set up Firebase (for push notifications)**:
-    + **Create a Firebase Project**: Go to the Firebase Console ([https://console.firebase.google.com/]) and create a new project. Follow the on-screen instructions.
-    + **Add Firebase to your Flutter app**: For both Android and iOS, you need to add your Flutter app to your Firebase project:
-      - **Android**: Follow the steps in the Firebase console to register your Android app, providing your app's package name (found in `android/app/build.gradle` under `defaultConfig/applicationId`). Download the `google-services.json` file and place it in the `android/app` directory of your Flutter project.
-      - **iOS**: Follow the steps in the Firebase console to register your iOS app, providing your app's bundle identifier (found in `ios/Runner/Info.plist` under `CFBundleIdentifier`). Download the `Runner-Info.plist` file and place it in the `ios/Runner` directory of your Flutter project.
+    + **Create a Firebase Project**: Go to the Firebase Console (https://console.firebase.google.com/) and create a new project. Follow the on-screen instructions.
+    + **Add Firebase to your Flutter app (Android)**:
+     Follow the steps in the Firebase console to register your Android app, providing your app's package name (found in `android/app/build.gradle` under `defaultConfig/applicationId`). Download the `google-services.json` file and place it in the `android/app` directory of your Flutter project.
     + **Enable Firebase Cloud Messaging (FCM)**: In your Firebase project, navigate to "Project settings" -> "Cloud Messaging" and ensure that the FCM service is enabled.    
    4. **Install dependencies**:
    Run the following command to install the project's dependencies:
@@ -58,8 +60,12 @@ The app follows a structured approach, separating concerns into different layers
 local_push_notifications_flutter/
 ├── lib/
 │   ├── config/
-│   │   └── router/
-│   │       └── app_router.dart       # Defines the app's navigation routes
+│   │   ├── router/
+│   │   │   └── app_router.dart       # Defines the app's navigation routes
+│   │   ├── theme/
+│   │   │   └── app_theme.dart        # Defines the app's theme and colors
+│   │   └── local_notification/
+│   │       └── local_notification_service.dart # Manages local notifications
 │   ├── domain/
 │   │   └── entities/
 │   │       └── push_messages.dart    # Defines the structure for notification data
@@ -89,6 +95,7 @@ The following dependencies are used in this project:
 `flutter: sdk: flutter`: The core Flutter SDK.  
 `flutter_bloc: ^9.1.0`: Implements the BLoC/Cubit pattern for state management.  
 `go_router: ^15.1.1`: A declarative routing package for Flutter that simplifies navigation.  
+`flutter_local_notifications: ^19.1.0`: Provides functionality for displaying local notifications.
 
 ## Contributing
 Contributions are welcome! If you have any suggestions, bug reports, or would like to add new features, please feel free to open an issue or submit a pull request.
