@@ -27,7 +27,6 @@ class LocalNotification {
     const initializationSettingsAndroid = AndroidInitializationSettings(
       'app_icon.png',
     );
-    //Todo : Add iOS settings
 
     const initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -55,7 +54,6 @@ class LocalNotification {
     );
     const notificationDetails = NotificationDetails(
       android: androidDetails,
-      //TODO : Add iOS settings
     );
     final flutterLocalNotificationPlugin = FlutterLocalNotificationsPlugin();
 
