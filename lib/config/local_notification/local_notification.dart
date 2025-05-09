@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:local_push_notifications_flutter/config/router/app_router.dart';
 
 class LocalNotification {
   static const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -23,7 +24,9 @@ class LocalNotification {
   static Future<void> initializeLocalNotification() async {
     final flutterLocalNotificationPlugin = FlutterLocalNotificationsPlugin();
 
-    const initializationSettingsAndroid =AndroidInitializationSettings('app_icon.png');
+    const initializationSettingsAndroid = AndroidInitializationSettings(
+      'app_icon.png',
+    );
     //Todo : Add iOS settings
 
     const initializationSettings = InitializationSettings(
@@ -31,10 +34,17 @@ class LocalNotification {
     );
 
     await flutterLocalNotificationPlugin.initialize(
-      initializationSettings
+      initializationSettings,
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
     );
   }
-  static void showLocalNotification({required int id, String? title, String? body, String? data}) async {
+
+  static void showLocalNotification({
+    required int id,
+    String? title,
+    String? body,
+    String? data,
+  }) async {
     const androidDetails = AndroidNotificationDetails(
       'channel id',
       'channel name',
@@ -48,7 +58,7 @@ class LocalNotification {
       //TODO : Add iOS settings
     );
     final flutterLocalNotificationPlugin = FlutterLocalNotificationsPlugin();
-    
+
     return flutterLocalNotificationPlugin.show(
       id,
       title,
@@ -56,5 +66,9 @@ class LocalNotification {
       notificationDetails,
       payload: data,
     );
+  }
+
+  static void onDidReceiveNotificationResponse(NotificationResponse response) {
+    appRouter.push('/push-details/${response.payload}');
   }
 }
