@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:equatable/equatable.dart';
-import 'package:local_push_notifications_flutter/config/local_notification/local_notification.dart';
 import 'package:local_push_notifications_flutter/domain/entities/push_messages.dart';
 import 'package:local_push_notifications_flutter/firebase_options.dart';
 
@@ -14,18 +13,25 @@ part 'notifications_event.dart';
 part 'notifications_state.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
-
-  print("Handling a background message: ${message.messageId}");
 }
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   int pushNumberId = 0;
+  final Future<void> Function()? requestLocalNotificationPermission;
+  final void Function({
+    required int id,
+    String? title,
+    String? body,
+    String? data,
+  })?
+  showLocalNotification;
 
-  NotificationsBloc() : super(NotificationsState()) {
+  NotificationsBloc({
+    this.showLocalNotification,
+    this.requestLocalNotificationPermission,
+  }) : super(NotificationsState()) {
     on<NotificationStatusChanged>(_notificationStatusChanged);
     on<NotificationReceived>(_onPushMessageReceived);
 
@@ -48,11 +54,14 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     emit(state.copyWith(status: event.status));
     _getFCMToken();
   }
+
   void _onPushMessageReceived(
     NotificationReceived event,
     Emitter<NotificationsState> emit,
   ) {
-    emit(state.copyWith(notifications: [event.message, ...state.notifications]));
+    emit(
+      state.copyWith(notifications: [event.message, ...state.notifications]),
+    );
   }
 
   void _initialStatusCheck() async {
@@ -70,19 +79,26 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   void handleRemoteMessage(RemoteMessage message) {
     if (message.notification == null) return;
     final notification = PushMessage(
-      messageId: message.messageId?.replaceAll(":", '').replaceAll("%", "") ?? '',
+      messageId:
+          message.messageId?.replaceAll(":", '').replaceAll("%", "") ?? '',
       title: message.notification?.title ?? '',
       body: message.notification?.body ?? '',
       sendDate: message.sentTime ?? DateTime.now(),
       data: message.data,
-      imageUrl: Platform.isIOS ? message.notification?.apple?.imageUrl : message.notification?.android?.imageUrl,  
+      imageUrl:
+          Platform.isIOS
+              ? message.notification?.apple?.imageUrl
+              : message.notification?.android?.imageUrl,
     );
-    LocalNotification.showLocalNotification(
-      id: ++pushNumberId,
-      title: notification.title,
-      body: notification.body,
-      data: notification.data.toString(), // notification.data,
-    );
+
+    if (showLocalNotification == null) {
+      showLocalNotification!(
+        id: ++pushNumberId,
+        title: notification.title,
+        body: notification.body,
+        data: notification.data.toString(), // notification.data,
+      );
+    }
 
     add(NotificationReceived(notification));
   }
@@ -101,12 +117,15 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       provisional: false,
       sound: true,
     );
-    await LocalNotification.requestLocalNotificationPermission();
+
+    if (requestLocalNotificationPermission != null) {
+      await requestLocalNotificationPermission!();
+    }
 
     add(NotificationStatusChanged(settings.authorizationStatus));
   }
 
-  PushMessage? getMessageById(String id) { 
+  PushMessage? getMessageById(String id) {
     final exist = state.notifications.any((message) => message.messageId == id);
     if (!exist) return null;
     return state.notifications.firstWhere((message) => message.messageId == id);

@@ -34,7 +34,7 @@ class LocalNotification {
       initializationSettings
     );
   }
-  static void showLocalNotification({required int id, required String? title, required String? body, String? data}) async {
+  static void showLocalNotification({required int id, String? title, String? body, String? data}) async {
     const androidDetails = AndroidNotificationDetails(
       'channel id',
       'channel name',
