@@ -13,14 +13,20 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await NotificationsBloc.initializeFCM();
-  await LocalNotification.initializeLocalNotification();
+  await LocalNotifications.initializeLocalNotification();
+  
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => NotificationsBloc(
+          requestLocalNotificationPermission: LocalNotifications.requestPermissionLocalNotifications,
+          showLocalNotification: LocalNotifications.showLocalNotification
+        ))
+      ], 
+      child: const MainApp())
+    
+  );
 
-  runApp(MultiBlocProvider(providers: [
-    BlocProvider(create: (_) => NotificationsBloc(
-      requestLocalNotificationPermission: LocalNotification.requestLocalNotificationPermission,
-      showLocalNotification: LocalNotification.showLocalNotification
-    ))
-  ], child: const MainApp()));
 }
 
 class MainApp extends StatelessWidget {
