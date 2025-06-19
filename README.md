@@ -12,8 +12,10 @@ Welcome to the Notification App, a Flutter application that demonstrates how to 
 
 ## Screenshots
 
-<img src="screenshots/home_screen.png" height="350" alt="Home Screen" />
-<img src="screenshots/details_screen.png" height="350" alt="Details Screen" />
+<img src="screenshots/screenshot1.jpeg" height="350" alt="Home Screen" />
+<img src="screenshots/screenshot2.jpeg" height="350" alt="Details Screen" />
+<img src="screenshots/screenshot3.jpeg" height="350" alt="Details Screen" />
+<img src="screenshots/screenshot4.jpeg" height="350" alt="Details Screen" />
 
 ## Important Note Regarding iOS/Apple Products
 
