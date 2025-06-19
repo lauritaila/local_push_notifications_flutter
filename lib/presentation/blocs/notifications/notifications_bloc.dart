@@ -1,7 +1,3 @@
-// import 'dart:async';
-
-import 'dart:io';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -35,9 +31,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     on<NotificationStatusChanged>(_notificationStatusChanged);
     on<NotificationReceived>(_onPushMessageReceived);
 
-    //verify permission
     _initialStatusCheck();
-    //listen to foreground messages
     _onForegroundMessage();
   }
 
@@ -67,7 +61,6 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   void _initialStatusCheck() async {
     final settings = await messaging.getNotificationSettings();
     add(NotificationStatusChanged(settings.authorizationStatus));
-    _getFCMToken();
   }
 
   void _getFCMToken() async {
@@ -83,15 +76,12 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
           message.messageId?.replaceAll(":", '').replaceAll("%", "") ?? '',
       title: message.notification?.title ?? '',
       body: message.notification?.body ?? '',
-      sendDate: message.sentTime ?? DateTime.now(),
+      sentDate: message.sentTime ?? DateTime.now(),
       data: message.data,
-      imageUrl:
-          Platform.isIOS
-              ? message.notification?.apple?.imageUrl
-              : message.notification?.android?.imageUrl,
+      imageUrl: message.notification!.android?.imageUrl
     );
 
-    if (showLocalNotification == null) {
+    if ( showLocalNotification != null ) {
       showLocalNotification!(
         id: ++pushNumberId,
         title: notification.title,
