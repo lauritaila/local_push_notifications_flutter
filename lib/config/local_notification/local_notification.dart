@@ -1,32 +1,19 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:local_push_notifications_flutter/config/router/app_router.dart';
 
-class LocalNotification {
-  static const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications', // title
-    description:
-        'This channel is used for important notifications.', // description
-    importance: Importance.high,
-    playSound: true,
-  );
+class LocalNotifications {
 
-  static Future<void> requestLocalNotificationPermission() async {
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.requestNotificationsPermission();
+  static Future<void> requestPermissionLocalNotifications() async {
+      final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+      await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          ?.requestNotificationsPermission();       
   }
 
   static Future<void> initializeLocalNotification() async {
     final flutterLocalNotificationPlugin = FlutterLocalNotificationsPlugin();
 
-    const initializationSettingsAndroid = AndroidInitializationSettings(
-      'app_icon.png',
-    );
+    const initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -45,8 +32,8 @@ class LocalNotification {
     String? data,
   }) async {
     const androidDetails = AndroidNotificationDetails(
-      'channel id',
-      'channel name',
+      'channelId', 
+      'channelName',
       playSound: true,
       sound: RawResourceAndroidNotificationSound('notification'),
       importance: Importance.max,
