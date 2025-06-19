@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local_push_notifications_flutter/domain/entities/push_messages.dart';
 import 'package:local_push_notifications_flutter/presentation/blocs/notifications/notifications_bloc.dart';
