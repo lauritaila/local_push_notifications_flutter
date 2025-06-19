@@ -40,7 +40,7 @@ Welcome to the Notification App, a Flutter application that demonstrates how to 
    ```bash
    cd local_push_notifications_flutter
    ```
-   3.**Set up Firebase (for push notifications)**:
+   3.**Set up Firebase (for push notifications)**: this is the link to follow to integrate firebase on flutter (https://firebase.flutter.dev/docs/overview/)
     + **Create a Firebase Project**: Go to the Firebase Console (https://console.firebase.google.com/) and create a new project. Follow the on-screen instructions.
     + **Add Firebase to your Flutter app (Android)**:
      Follow the steps in the Firebase console to register your Android app, providing your app's package name (found in `android/app/build.gradle` under `defaultConfig/applicationId`). Download the `google-services.json` file and place it in the `android/app` directory of your Flutter project.
